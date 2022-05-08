@@ -1,0 +1,9 @@
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\bin\Debug\SocketServerSystem.exe.config
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\bin\Debug\SocketServerSystem.exe
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\bin\Debug\SocketServerSystem.pdb
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\bin\Debug\LitJSON.dll
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.AssemblyReference.cache
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\obj\Debug\SocketServerSystem.exe
+C:\Users\admin\source\repos\SocketServerSystem\SocketServerSystem\obj\Debug\SocketServerSystem.pdb
