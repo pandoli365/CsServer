@@ -37,7 +37,9 @@ namespace SocketServerSystem
             is_ServerPlay = false;
             Thread.Sleep(1000);
             tr_Accept.Interrupt();
+            tr_Processing.Interrupt();
             tr_Accept.Abort();
+            tr_Processing.Abort();
             Thread.Sleep(1000);
             DataSet();
         }
@@ -53,11 +55,13 @@ namespace SocketServerSystem
             remote = sender;
             GetData = new Queue<DataInfo>();
             tr_Accept = new Thread(() => Accept());
+            tr_Processing = new Thread(() => Processing());
         }
         #endregion
 
         List<UDPUser> userList;
         Thread tr_Accept;
+        Thread tr_Processing;
         bool is_ServerPlay;
 
         #region Start
@@ -68,6 +72,7 @@ namespace SocketServerSystem
         {
             is_ServerPlay = true;
             tr_Accept.Start();
+            tr_Processing.Start();
         }
         /// <summary>
         /// 유저들의 접속을 처리해줌.
@@ -79,7 +84,7 @@ namespace SocketServerSystem
             {
                 _data = new byte[1024];
                 Server.ReceiveFrom(_data, ref remote);
-                GetData.Enqueue(new DataInfo(Encoding.Default.GetString(_data), remote.ToString()));//Null문자 제거해서 들어갈수 있게 만들기
+                GetData.Enqueue(new DataInfo(Encoding.Default.GetString(_data), remote));//Null문자 제거해서 들어갈수 있게 만들기
                 //Console.WriteLine("{0} : {1}", remote.ToString(), Encoding.Default.GetString(_data));
                 //remote < 이정보자체가 어떤 연결을 통신할지 결정하는 키가됨.
             }
