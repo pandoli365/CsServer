@@ -83,14 +83,21 @@ namespace SocketServerSystem
 
         #endregion
     }
-    class TCPUser : Packet.User
+    class TCPUser
     {
         string cid;
         uint sid;
-        public TCPUser(Socket _user, uint _sid = 0, string _cid = "") : base(_user)
+        public Queue<Packet.Message> getMassageList;
+        public Queue<Packet.Message> outMassageList;
+        public Socket user; //소켓
+        public string ip;//유저의 ip주소
+        public TCPUser(Socket _user, uint _sid = 0, string _cid = "")
         {
             cid = _cid;
             sid = _sid;
+            user = _user;
+            getMassageList = new Queue<Packet.Message>();
+            outMassageList = new Queue<Packet.Message>();
         }
     }
 }

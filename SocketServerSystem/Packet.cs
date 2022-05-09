@@ -67,19 +67,83 @@ namespace SocketServerSystem
                 }
             }
         }
-        public class User
+        public class Vector3
         {
-            public Queue<Message> getMassageList;
-            public Queue<Message> outMassageList;
-            public Socket user; //소켓
-            public string ip;//유저의 ip주소
-            public User(Socket _user)
+            public float x;
+            public float y;
+            public float z;
+
+            public Vector3(float _x, float _y)
             {
-                user = _user;
-                getMassageList = new Queue<Message>();
-                outMassageList = new Queue<Message>();
+                x = _x;
+                y = _y;
+                z = 0;
+            }
+            public Vector3(float _x, float _y, float _z)
+            {
+                x = _x;
+                y = _y;
+                z = _z;
+            }
+            public string ToString()
+            {
+                return "(" + x.ToString() + ", " + y.ToString() + ", " + z.ToString() +")";
             }
 
+            #region static
+            public static Vector3 right { get { return new Vector3(1, 0, 0); } }
+            public static Vector3 left { get { return new Vector3(-1, 0, 0); } }
+            public static Vector3 up { get { return new Vector3(0, 1, 0); } }
+            public static Vector3 back { get { return new Vector3(0, 0, -1); } }
+            public static Vector3 forward { get { return new Vector3(0, 0, 1); } }
+            public static Vector3 one { get { return new Vector3(1, 1, 1); } }
+            public static Vector3 zero { get { return new Vector3(0, 0, 0); } }
+            public static Vector3 down { get { return new Vector3(0, -1, 0); } }
+            public static Vector3 operator +(Vector3 a, Vector3 b)
+            {
+                return new Vector3(a.x + b.x, a.y + b.y, a.z + b.y);
+            }
+            public static Vector3 operator -(Vector3 a)
+            {
+                return new Vector3(a.x * -1, a.y * -1, a.z * -1);
+            }
+            public static Vector3 operator -(Vector3 a, Vector3 b)
+            {
+                return new Vector3(a.x - b.x, a.y - b.y, a.z - b.y);
+            }
+            public static Vector3 operator *(float d, Vector3 a)
+            {
+                return new Vector3(a.x * d, a.y * d, a.z * d);
+            }
+            public static Vector3 operator *(Vector3 a, Vector3 b)
+            {
+                return new Vector3(a.x * b.x, a.y * b.y, a.z * b.y);
+            }
+            public static Vector3 operator *(Vector3 a, float d)
+            {
+                return new Vector3(a.x * d, a.y * d, a.z * d);
+            }
+            public static Vector3 operator /(Vector3 a, float d)
+            {
+                return new Vector3(a.x / d, a.y / d, a.z / d);
+            }
+            public static Vector3 operator /(float d, Vector3 a)
+            {
+                return new Vector3(d / a.x, d / a.y, d / a.z);
+            }
+            public static Vector3 operator /(Vector3 a, Vector3 b)
+            {
+                return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
+            }
+            public static bool operator ==(Vector3 a, Vector3 b)
+            {
+                return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
+            }
+            public static bool operator !=(Vector3 a, Vector3 b)
+            {
+                return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
+            }
+            #endregion
         }
     }
 }
