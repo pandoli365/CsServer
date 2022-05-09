@@ -193,7 +193,7 @@ namespace SocketServerSystem
         public EndPoint remote;
         public DataInfo(string _data, EndPoint _remote)
         {
-            data = _data;
+            data = _data.Trim('\0');
             remote = _remote;
         }
     }
