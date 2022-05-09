@@ -10,7 +10,7 @@ namespace SocketServerSystem
     {
         static void Main(string[] args)
         {
-            new TCP(4869);
+            //new TCP(4860);
             new UDP(4868);
             UDP.script.ServerStart();
             Console.Read();

@@ -15,7 +15,7 @@ namespace SocketServerSystem
         public static TCP script;
         Socket Server;
         int Port;
-        public TCP(int _Port = 4863)
+        public TCP(int _Port = 4860)
         {
             if (script == null)
             {
@@ -28,12 +28,12 @@ namespace SocketServerSystem
         /// <summary>
         /// 모든 데이터를 초기화 할때 호출
         /// </summary>
-        public void DataReset(int _Port = 4863)
+        public void DataReset(int _Port = 4860)
         {
             Port = _Port;
             is_ServerPlay = false;
             Thread.Sleep(1000);
-            foreach (Packet.User data in userList)
+            foreach (TCPUser data in userList)
             {
                 data.user.Close();
             }
