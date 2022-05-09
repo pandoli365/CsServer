@@ -49,6 +49,7 @@ namespace SocketServerSystem
         private void DataSet()
         {
             userList = new List<UDPUser>();
+            LobbyList = new List<Lobby>();
             Server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sender = new IPEndPoint(IPAddress.Any, Port);
             Server.Bind(sender);
@@ -60,6 +61,7 @@ namespace SocketServerSystem
         #endregion
 
         List<UDPUser> userList;
+        List<Lobby> LobbyList;
         Thread tr_Accept;
         Thread tr_Processing;
         bool is_ServerPlay;
@@ -113,18 +115,75 @@ namespace SocketServerSystem
                             break;
                         case "JoinLobby":
                             index = userList.FindIndex(n => n.cid.Equals(di.remote));
-                            userList[index].pos = UDPUser.ePos.Lobby;
-                            userList[index].lobbyName = cut[1];
+                            if (userList[index].pos.Equals(UDPUser.ePos.Server) || userList[index].pos.Equals(UDPUser.ePos.Room))
+                            {
+                                userList[index].pos = UDPUser.ePos.Lobby;
+                                userList[index].lobbyName = cut[1];
+                                int lobbyCount = LobbyList.FindIndex(n => n.lobbyName.Equals(cut[1]));
+                                if (lobbyCount.Equals(-1))
+                                {
+                                    LobbyList.Add(new Lobby(cut[1]));
+                                    lobbyCount = LobbyList.FindIndex(n => n.lobbyName.Equals(cut[1]));
+                                }
+                                LobbyList[lobbyCount].AddUser(userList[index].cid);
+                            }
+                            break;
+                        case "OutLobby":
+                            index = userList.FindIndex(n => n.cid.Equals(di.remote));
+                            if (userList[index].pos.Equals(UDPUser.ePos.Lobby))
+                            {
+                                int lobbyCount = LobbyList.FindIndex(n => n.lobbyName.Equals(userList[index].lobbyName));
+                                LobbyList[lobbyCount].RemoveUser(userList[index].cid);
+                                userList[index].pos  = UDPUser.ePos.Server;
+                                userList[index].lobbyName = "";
+                            }
                             break;
                         case "JoinRoom":
                             index = userList.FindIndex(n => n.cid.Equals(di.remote));
-                            userList[index].pos = UDPUser.ePos.Room;
-                            userList[index].roomName = cut[1];
-                            userList[index].roomType = cut[2].Equals(true);
+                            if (userList[index].pos.Equals(UDPUser.ePos.Lobby))
+                            {
+                                userList[index].pos = UDPUser.ePos.Room;
+                                userList[index].roomName = cut[1];
+                                userList[index].is_RoomPrivate = cut[2].Equals(true);
+                                int lobbyCount = LobbyList.FindIndex(n => n.lobbyName.Equals(userList[index].lobbyName));
+                                int roomCount = LobbyList[lobbyCount].roomList.FindIndex(n => n.roomName.Equals(cut[1]));
+                                if(roomCount.Equals(-1))
+                                {
+                                    LobbyList[lobbyCount].roomList.Add(new Room(cut[1], cut[2].Equals(true)));
+                                    roomCount = LobbyList[lobbyCount].roomList.FindIndex(n => n.roomName.Equals(cut[1]));
+                                }
+                                LobbyList[lobbyCount].roomList[roomCount].AddUser(userList[index].cid);
+                            }
+                            break;
+                        case "OutRoom":
+                            index = userList.FindIndex(n => n.cid.Equals(di.remote));
+                            if(userList[index].pos.Equals(UDPUser.ePos.Room))
+                            {
+                                int lobbyCount = LobbyList.FindIndex(n => n.lobbyName.Equals(userList[index].lobbyName));
+                                int roomCount = LobbyList[lobbyCount].roomList.FindIndex(n => n.roomName.Equals(userList[index].roomName));
+                                LobbyList[lobbyCount].roomList[roomCount].RemoveUser(userList[index].cid);
+                                userList[index].pos = UDPUser.ePos.Lobby;
+                                userList[index].roomName = "";
+                                userList[index].is_RoomPrivate = false;
+                            }
                             break;
                     }
                 }
             }
+        }
+
+        public bool SendData(string _cid, byte[] _data)
+        {
+            int index = userList.FindIndex(n => n.cid.Equals(_cid));
+            if(index.Equals(-1))
+            {
+                return false;
+            }
+            else
+            {
+                Server.SendTo(_data, _data.Length, SocketFlags.None, remote);
+                return true;
+            }    
         }
         #endregion
     }
@@ -154,7 +213,7 @@ namespace SocketServerSystem
         public ePos pos;//유저의 현재 위치
         public string lobbyName;
         public string roomName;
-        public bool roomType;
+        public bool is_RoomPrivate;
 
         public UDPUser(EndPoint _sid,string _cid = "")
         {
@@ -162,6 +221,70 @@ namespace SocketServerSystem
             cid = _cid;
             pos = ePos.Server;
             Console.WriteLine("새유저가 들어왔습니다");
+        }
+    }
+    class Room
+    {
+        public string roomName; //방이름 비공계 방일경우 다음과 같이 생성됨 방이름:비밀번호
+        public bool is_RoomPrivate; //방이 비공계인지 아닌지 구분을함.
+        List<string> room_User_Cid;
+        public Room(string _roomName, bool _is_RoomPrivate)
+        {
+            is_RoomPrivate = _is_RoomPrivate;
+            roomName = _roomName;
+            room_User_Cid = new List<string>();
+        }
+        public void AddUser(string _cid)
+        {
+            room_User_Cid.Add(_cid);
+        }
+        public void RemoveUser(string _cid)
+        {
+            room_User_Cid.Remove(_cid);
+        }
+        public void Send(string _data)
+        {
+            byte[] data = Encoding.Default.GetBytes(_data);
+            for (int n = 0; n < room_User_Cid.Count; n++)
+            {
+                if (!UDP.script.SendData(room_User_Cid[n], data))
+                {
+                    room_User_Cid.RemoveAt(n);
+                    n--;
+                }
+            }
+        }
+    }
+    class Lobby
+    {
+        public List<Room> roomList;
+        public string lobbyName;
+        List<string> room_User_Cid;
+        public Lobby(string _lobbyName)
+        {
+            lobbyName = _lobbyName;
+            roomList = new List<Room>();
+            room_User_Cid = new List<string>();
+        }
+        public void AddUser(string _cid)
+        {
+            room_User_Cid.Add(_cid);
+        }
+        public void RemoveUser(string _cid)
+        {
+            room_User_Cid.Remove(_cid);
+        }
+        public void Send(string _data)
+        {
+            byte[] data = Encoding.Default.GetBytes(_data);
+            for (int n = 0; n < room_User_Cid.Count; n++)
+            {
+                if(!UDP.script.SendData(room_User_Cid[n], data))
+                {
+                    room_User_Cid.RemoveAt(n);
+                    n--;
+                }
+            }
         }
     }
 }
@@ -182,3 +305,13 @@ namespace SocketServerSystem
 //전송 데이터는 절대 1024byte가 넘지 않게 할것!
 //기존 코딩 방식대로 제한을 걸까 했지만 접속 데이터가 정확하지 않음.
 //룸마다 쓰레드 나누기
+//DDos 공격은 사전에 막는것이 중요 ip를 숨길수 있게 다양한 방법을 찾아보기.
+//코드로 특정 ip를 차단할수 있는지 알아보기
+/*            
+while (true)
+{
+    Thread.Sleep(1);
+    _data = Encoding.Default.GetBytes((n++).ToString());
+    sck.SendTo(_data, _data.Length, SocketFlags.None, remote);
+}
+*/
