@@ -11,18 +11,8 @@ namespace SocketServerSystem
     {
         static void Main(string[] args)
         {
-            //new TCP(4860);
             new SampleServerUDP(4868);
-            //SampleUDP.script.ServerStart();
-            Console.Read();
-        }
-        public static void Test()
-        {
-            while(true)
-            {
-                Thread.Sleep(1000);
-                Console.WriteLine("동작중");
-            }
+            SampleServerUDP.script.ServerStart();
         }
     }
 
