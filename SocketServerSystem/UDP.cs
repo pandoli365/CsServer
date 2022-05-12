@@ -51,18 +51,33 @@ namespace SocketServerSystem
 
         #region System
         public static UDP script;
-        Socket Server;
+        Socket server;
+        Socket client;
         IPEndPoint sender;
         EndPoint remote;
-        int Port;
+        int port;
         Queue<DataInfo> GetData;
-        public UDP(int _Port = 4861)
+        Queue<DataInfo> OutData;
+        bool is_Server;
+        string ip;
+        int maxSize;
+        /// <summary>
+        /// udp 기본 세팅
+        /// </summary>
+        /// <param name="_is_Server">현재 동작하는 시스템이 서버인지 클라이언트인지 확인</param>
+        /// <param name="_maxSize">송수신하는 패킷의 크기를 설정 기본값 : 1024</param>
+        /// <param name="_port">개방혹은 접속할 포트번호</param>
+        /// <param name="_ip">클라이언트가 접속을 희망하는 ip주소</param>
+        public UDP(bool _is_Server,int _maxSize = 1024, int _port = 4861, string _ip = "127.0.0.1")
         {
             if (script == null)
             {
                 script = this;
-                is_ServerPlay = false;
-                Port = _Port;
+                is_SocketPlay = false;
+                maxSize = _maxSize;
+                port = _port;
+                is_Server = _is_Server;
+                ip = _ip;
                 DataSet();
             }
             else
@@ -77,15 +92,32 @@ namespace SocketServerSystem
         /// </summary>
         public void DataReset(int _Port = 4861)
         {
-            Port = _Port;
-            is_ServerPlay = false;
-            Thread.Sleep(1000);
-            tr_Accept.Interrupt();
-            tr_Processing.Interrupt();
-            tr_Accept.Abort();
-            tr_Processing.Abort();
-            Thread.Sleep(1000);
+            port = _Port;
+            is_SocketPlay = false;
+            if (is_Server)
+            {
+                Thread.Sleep(1000);
+                tr_Accept.Interrupt();
+                tr_Processing.Interrupt();
+                Thread.Sleep(1000);
+                tr_Accept.Abort();
+                tr_Processing.Abort();
+                Thread.Sleep(1000);
+            }
+            else
+            {
+                Thread.Sleep(1000);
+                tr_Accept.Interrupt();
+                tr_Processing.Interrupt();
+                tr_Send.Interrupt();
+                Thread.Sleep(1000);
+                tr_Accept.Abort();
+                tr_Processing.Abort();
+                tr_Send.Abort();
+                Thread.Sleep(1000);
+            }
             DataSet();
+            is_EndSocket = true;
         }
         /// <summary>
         /// 모든 데이터를 재설정 할때 호출
@@ -93,13 +125,22 @@ namespace SocketServerSystem
         private void DataSet()
         {
             userList = new List<UDPUser>();
-            Server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            sender = new IPEndPoint(IPAddress.Any, Port);
-            Server.Bind(sender);
+            if (is_Server)
+            {
+                server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                sender = new IPEndPoint(IPAddress.Any, port);
+            }
+            else
+            {
+                sender =  new IPEndPoint(IPAddress.Parse(ip), port);
+                client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            }
             remote = sender;
             GetData = new Queue<DataInfo>();
+            OutData = new Queue<DataInfo>();
             tr_Accept = new Thread(() => Accept());
             tr_Processing = new Thread(() => Processing());
+            tr_Send = new Thread(() => Send());
             v_DataSet();
         }
         /// <summary>
@@ -114,32 +155,45 @@ namespace SocketServerSystem
         List<UDPUser> userList;
         Thread tr_Accept;
         Thread tr_Processing;
-        bool is_ServerPlay;
+        Thread tr_Send;
+        bool is_SocketPlay;
+        bool is_EndSocket = true;
         /// <summary>
-        /// 서버가 실행중인지 아닌지 확인
+        /// 서버가 실행중인지 아닌지 확인 정상적으로 종료가 완료되면 true를 반환
         /// </summary>
-        public bool ServerPlay { get { return is_ServerPlay; } }
+        public bool ServerPlay { get { return is_EndSocket; } }
 
         /// <summary>
         /// 서버를 실행함
         /// </summary>
         public void ServerStart()
         {
-            is_ServerPlay = true;
+            server.Bind(sender);
+            is_SocketPlay = true;
+            is_EndSocket = false;
             tr_Accept.Start();
             tr_Processing.Start();
         }
+        public void ClientStart()
+        {
+            //client.SendTo(_data, _data.Length, SocketFlags.None, sender);
+            is_SocketPlay = true;
+            is_EndSocket = false;
+            tr_Accept.Start();
+            tr_Processing.Start();
+            tr_Send.Start();
+        }
 
         /// <summary>
-        /// 유저들의 접속을 처리해줌.
+        /// 받은 데이터를 처리함.
         /// </summary>
         void Accept()
         {
             byte[] _data;
-            while (is_ServerPlay)
+            while (is_SocketPlay)
             {
-                _data = new byte[1024];
-                Server.ReceiveFrom(_data, ref remote);
+                _data = new byte[maxSize];
+                server.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
                 GetData.Enqueue(new DataInfo(Encoding.Default.GetString(_data), remote));
                 //Console.WriteLine("{0} : {1}", remote.ToString(), Encoding.Default.GetString(_data));
                 //remote < 이정보자체가 어떤 연결을 통신할지 결정하는 키가됨.
@@ -151,8 +205,7 @@ namespace SocketServerSystem
         /// </summary>
         void Processing()
         {
-            DataInfo di;
-            while (is_ServerPlay)
+            while (is_SocketPlay)
             {
                 if (GetData.Count.Equals(0))
                 {
@@ -161,6 +214,41 @@ namespace SocketServerSystem
                 else
                 {
                     v_Processing(GetData.Dequeue());
+                }
+            }
+        }
+
+        /// <summary>
+        /// 클라이언트에서 데이터를 보낼때 사용
+        /// </summary>
+        void Send()
+        {
+            byte[] data = new byte[1024];
+            while (is_SocketPlay)
+            {
+                if (OutData.Count.Equals(0))
+                {
+                    Thread.Sleep(100);
+                }
+                else
+                {
+                    try
+                    {
+                        DataInfo di = OutData.Dequeue();
+                        data = Encoding.Default.GetBytes(di.data);
+                        if (data.Length > maxSize)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("시스템에 설정된 패킷보다 더 높은용량을 송신합니다.");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        else
+                            client.SendTo(data, data.Length, SocketFlags.None, remote);
+                    }
+                    catch (SocketException ex)
+                    {
+                        Console.WriteLine("{0} : {1}", ex.SocketErrorCode, ex.Message);
+                    }
                 }
             }
         }
@@ -175,7 +263,7 @@ namespace SocketServerSystem
         }
 
         /// <summary>
-        /// 데이터를 유저에게 송신
+        /// 서버가 유저에게 송신할대 사용
         /// </summary>
         /// <param name="_cid">유저의 id</param>
         /// <param name="_data">보내고 싶은 정보</param>
@@ -191,8 +279,18 @@ namespace SocketServerSystem
             {
                 try
                 {
-                    Server.SendTo(_data, _data.Length, SocketFlags.None, remote);
-                    return true;
+                    if (_data.Length > maxSize)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("시스템에 설정된 패킷보다 더 높은용량을 송신합니다.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        return false;
+                    }
+                    else
+                    {
+                        server.SendTo(_data, _data.Length, SocketFlags.None, remote);
+                        return true;
+                    }
                 }
                 catch (SocketException ex)
                 {
@@ -202,6 +300,15 @@ namespace SocketServerSystem
                 }
 
             }
+        }
+
+        /// <summary>
+        /// 유저가 서버에게 송신할때 사용
+        /// </summary>
+        /// <param name="di"></param>
+        public void SendData(DataInfo di)
+        {
+            OutData.Enqueue(di);
         }
 
         public void AddUser(UDPUser NewUser)
@@ -234,6 +341,8 @@ namespace SocketServerSystem
                 return userList[index];
             }
         }
+
+   
     }
 }
 //메모

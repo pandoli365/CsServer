@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SocketServerSystem
@@ -11,17 +12,25 @@ namespace SocketServerSystem
         static void Main(string[] args)
         {
             //new TCP(4860);
-            new SampleUDP(4868);
-            SampleUDP.script.ServerStart();
+            new SampleServerUDP(4868);
+            //SampleUDP.script.ServerStart();
             Console.Read();
         }
+        public static void Test()
+        {
+            while(true)
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine("동작중");
+            }
+        }
     }
-    class SampleUDP : UDP
+    class SampleServerUDP : UDP
     {
         List<Lobby> LobbyList;
         //참조를 선언한 경우라면 가급적 udp의 직접 접근은 삼가해 주세요
-        public static SampleUDP script;
-        public SampleUDP(int _Port = 4861) : base(_Port)
+        public static SampleServerUDP script;
+        public SampleServerUDP(int _Port = 4861) : base(true, _Port)
         {
             if (script == null)
             {
@@ -34,6 +43,7 @@ namespace SocketServerSystem
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+        /*
         public override void v_Processing(DataInfo di)
         {
             UDPUser user;
@@ -114,6 +124,7 @@ namespace SocketServerSystem
                     break;
             }
         }
+        */
         public override void v_DataSet()
         {
             LobbyList = new List<Lobby>();

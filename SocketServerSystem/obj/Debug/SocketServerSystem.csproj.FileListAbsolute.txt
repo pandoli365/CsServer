@@ -16,3 +16,12 @@ C:\Users\admin\OneDrive\바탕 화면\SocketServerSystem\SocketServerSystem\bin\
 C:\Users\admin\OneDrive\바탕 화면\SocketServerSystem\SocketServerSystem\bin\Debug\SocketServerSystem.pdb
 C:\Users\admin\OneDrive\바탕 화면\SocketServerSystem\SocketServerSystem\bin\Debug\LitJSON.dll
 C:\Users\admin\OneDrive\바탕 화면\SocketServerSystem\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.exe.config
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.exe
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.pdb
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\bin\Debug\LitJSON.dll
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.AssemblyReference.cache
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CoreCompileInputs.cache
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.exe
+C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.pdb
