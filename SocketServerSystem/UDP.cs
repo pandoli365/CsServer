@@ -176,7 +176,7 @@ namespace SocketServerSystem
         }
         public void ClientStart()
         {
-            //client.SendTo(_data, _data.Length, SocketFlags.None, sender);
+            client.Bind(sender);
             is_SocketPlay = true;
             is_EndSocket = false;
             tr_Accept.Start();
@@ -193,7 +193,10 @@ namespace SocketServerSystem
             while (is_SocketPlay)
             {
                 _data = new byte[maxSize];
-                server.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
+                if (is_Server)
+                    server.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
+                else
+                    client.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
                 GetData.Enqueue(new DataInfo(Encoding.Default.GetString(_data), remote));
                 //Console.WriteLine("{0} : {1}", remote.ToString(), Encoding.Default.GetString(_data));
                 //remote < 이정보자체가 어떤 연결을 통신할지 결정하는 키가됨.
@@ -243,7 +246,10 @@ namespace SocketServerSystem
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else
+                        {
+                            Console.WriteLine("전송완료");
                             client.SendTo(data, data.Length, SocketFlags.None, remote);
+                        }
                     }
                     catch (SocketException ex)
                     {
@@ -308,6 +314,7 @@ namespace SocketServerSystem
         /// <param name="di"></param>
         public void SendData(DataInfo di)
         {
+            di.remote = remote;
             OutData.Enqueue(di);
         }
 
@@ -364,6 +371,7 @@ namespace SocketServerSystem
 //DDos 공격은 사전에 막는것이 중요 ip를 숨길수 있게 다양한 방법을 찾아보기.
 //코드로 특정 ip를 차단할수 있는지 알아보기
 //다시 만들기 단순한 udp와 서버 시스템이랑 분리할것
+//String형식에서 obj[] 형식으로 전송할 수 있게 변경할것
 /*            
 while (true)
 {

@@ -25,3 +25,12 @@ C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketSe
 C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
 C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.exe
 C:\Users\admin\Downloads\CsServer\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.pdb
+D:\Commission\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.exe.config
+D:\Commission\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.exe
+D:\Commission\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.pdb
+D:\Commission\CsServer\SocketServerSystem\bin\Debug\LitJSON.dll
+D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.AssemblyReference.cache
+D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CoreCompileInputs.cache
+D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
+D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.exe
+D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.pdb

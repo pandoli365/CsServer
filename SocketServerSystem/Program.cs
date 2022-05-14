@@ -11,8 +11,17 @@ namespace SocketServerSystem
     {
         static void Main(string[] args)
         {
+            //new SampleClientUDP(4868, "127.0.0.1");
+            //SampleClientUDP.script.ClientStart();
+            //string SendData = "NewUser\npandoli";
+            //SampleClientUDP.DataInfo sd = new SampleClientUDP.DataInfo(SendData, null);
+            //SampleClientUDP.script.SendData(sd);
+            //Console.ReadLine();
+
+
             new SampleServerUDP(4868);
             SampleServerUDP.script.ServerStart();
+
         }
     }
 
@@ -65,10 +74,12 @@ namespace SocketServerSystem
         {
             UDPUser user;
             string[] cut = di.data.Split('\n');
+            Console.WriteLine(cut[0]);
             switch (cut[0])
             {
                 case "NewUser":
                     AddUser(new UDPUser(di.remote, cut[1]));
+                    Console.WriteLine("새로운 유저가 접속 했습니다 : {0}",cut[1]);
                     break;
                 case "JoinLobby":
                     user = UserInfo(di.remote);
@@ -209,6 +220,24 @@ namespace SocketServerSystem
                         n--;
                     }
                 }
+            }
+        }
+    }
+    class SampleClientUDP : UDP
+    {
+        public static SampleClientUDP script;
+        public SampleClientUDP(int _port, string _ip = "127.0.0.1") : base(false, 1024, _port, _ip)
+        {
+            if (script == null)
+            {
+                script = this;
+            }
+            else
+            {
+                //에러 글자색 변경을 위한 코드
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("에러 : 중복된 선언을 하셨습니다");
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
     }
