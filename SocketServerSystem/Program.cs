@@ -11,16 +11,19 @@ namespace SocketServerSystem
     {
         static void Main(string[] args)
         {
-            //new SampleClientUDP(4868, "127.0.0.1");
+            #region UDPSample
+            ////client
+            //new SampleClientUDP(4868, "175.124.197.128");
             //SampleClientUDP.script.ClientStart();
             //string SendData = "NewUser\npandoli";
             //SampleClientUDP.DataInfo sd = new SampleClientUDP.DataInfo(SendData, null);
             //SampleClientUDP.script.SendData(sd);
             //Console.ReadLine();
 
-
-            new SampleServerUDP(4868);
-            SampleServerUDP.script.ServerStart();
+            ////server
+            //new SampleServerUDP(4868);
+            //SampleServerUDP.script.ServerStart();
+            #endregion
 
         }
     }
@@ -80,6 +83,7 @@ namespace SocketServerSystem
                 case "NewUser":
                     AddUser(new UDPUser(di.remote, cut[1]));
                     Console.WriteLine("새로운 유저가 접속 했습니다 : {0}",cut[1]);
+                    SendData(cut[1], Encoding.Default.GetBytes("새로운 서버에 오신것을 환영 합니다."));
                     break;
                 case "JoinLobby":
                     user = UserInfo(di.remote);

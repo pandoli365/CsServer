@@ -129,13 +129,15 @@ namespace SocketServerSystem
             {
                 server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 sender = new IPEndPoint(IPAddress.Any, port);
+                remote = sender;
             }
             else
             {
-                sender =  new IPEndPoint(IPAddress.Parse(ip), port);
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                sender = new IPEndPoint(IPAddress.Any, port);
+                remote = new IPEndPoint(IPAddress.Parse(ip), port);
             }
-            remote = sender;
+
             GetData = new Queue<DataInfo>();
             OutData = new Queue<DataInfo>();
             tr_Accept = new Thread(() => Accept());
@@ -198,8 +200,6 @@ namespace SocketServerSystem
                 else
                     client.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
                 GetData.Enqueue(new DataInfo(Encoding.Default.GetString(_data), remote));
-                //Console.WriteLine("{0} : {1}", remote.ToString(), Encoding.Default.GetString(_data));
-                //remote < 이정보자체가 어떤 연결을 통신할지 결정하는 키가됨.
             }
         }
 
@@ -314,7 +314,6 @@ namespace SocketServerSystem
         /// <param name="di"></param>
         public void SendData(DataInfo di)
         {
-            di.remote = remote;
             OutData.Enqueue(di);
         }
 
@@ -354,9 +353,6 @@ namespace SocketServerSystem
 }
 //메모
 //UDP와 TCP를 둘다 사용할지 아니면 TCP만 사용할지 고민해서 작성할것
-//내가 현재 이해하고 있는 UDP
-//UDP의 데이터는 누구나 접속이 가능함.
-//photon에서 처럼 특정 1인에 대한 메세지 송수신이 어려움.
 //처리하기 좋은 시스템 : 유저의 현재 위치, 유저가 접속하고 있는 월드의 정보, 각 월드별 정보(Lobby World)
 //테스트 해봐야 하는것 : 과연 매초마다 데이터를 요청할경우 서버는 어떤 데이터를 반환하는가
 //각 유저별로 연결종료가 가능한가?
@@ -372,11 +368,4 @@ namespace SocketServerSystem
 //코드로 특정 ip를 차단할수 있는지 알아보기
 //다시 만들기 단순한 udp와 서버 시스템이랑 분리할것
 //String형식에서 obj[] 형식으로 전송할 수 있게 변경할것
-/*            
-while (true)
-{
-    Thread.Sleep(1);
-    _data = Encoding.Default.GetBytes((n++).ToString());
-    sck.SendTo(_data, _data.Length, SocketFlags.None, remote);
-}
-*/
+//유저가 일정 시간동안 반응이 없다면 자동으로 연결을 끊게 만들기
