@@ -34,3 +34,12 @@ D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.Co
 D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
 D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.exe
 D:\Commission\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.pdb
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.exe.config
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.exe
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\bin\Debug\SocketServerSystem.pdb
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\bin\Debug\LitJSON.dll
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.AssemblyReference.cache
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CoreCompileInputs.cache
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.csproj.CopyComplete
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.exe
+C:\Users\admin\Source\Repos\pandoli365\CsServer\SocketServerSystem\obj\Debug\SocketServerSystem.pdb

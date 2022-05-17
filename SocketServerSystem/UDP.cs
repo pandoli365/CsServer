@@ -129,15 +129,13 @@ namespace SocketServerSystem
             {
                 server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 sender = new IPEndPoint(IPAddress.Any, port);
-                remote = sender;
             }
             else
             {
                 client = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                sender = new IPEndPoint(IPAddress.Any, port);
-                remote = new IPEndPoint(IPAddress.Parse(ip), port);
+                sender = new IPEndPoint(IPAddress.Parse(ip), port);
             }
-
+            remote = sender;
             GetData = new Queue<DataInfo>();
             OutData = new Queue<DataInfo>();
             tr_Accept = new Thread(() => Accept());
@@ -178,7 +176,7 @@ namespace SocketServerSystem
         }
         public void ClientStart()
         {
-            client.Bind(sender);
+            client.Connect(sender);
             is_SocketPlay = true;
             is_EndSocket = false;
             tr_Accept.Start();
