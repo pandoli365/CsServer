@@ -197,7 +197,7 @@ namespace SocketServerSystem
                     server.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
                 else
                     client.ReceiveFrom(_data, maxSize, SocketFlags.None, ref remote);
-                GetData.Enqueue(new DataInfo(Encoding.Default.GetString(_data), remote));
+                GetData.Enqueue(new DataInfo(Encoding.UTF8.GetString(_data), remote));
             }
         }
 
@@ -236,7 +236,7 @@ namespace SocketServerSystem
                     try
                     {
                         DataInfo di = OutData.Dequeue();
-                        data = Encoding.Default.GetBytes(di.data);
+                        data = Encoding.UTF8.GetBytes(di.data);
                         if (data.Length > maxSize)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
@@ -292,7 +292,7 @@ namespace SocketServerSystem
                     }
                     else
                     {
-                        server.SendTo(_data, _data.Length, SocketFlags.None, remote);
+                        server.SendTo(_data, _data.Length, SocketFlags.None, userList[index].sid);
                         return true;
                     }
                 }
@@ -318,6 +318,12 @@ namespace SocketServerSystem
         public void AddUser(UDPUser NewUser)
         {
             userList.Add(NewUser);
+        }
+        public void RemoveUser(string _cid)
+        {
+            int index = userList.FindIndex(n => n.cid.Equals(_cid));
+            if (!index.Equals(-1))
+                userList.RemoveAt(index);
         }
 
         public UDPUser UserInfo(EndPoint _sid)

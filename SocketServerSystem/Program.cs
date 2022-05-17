@@ -20,9 +20,9 @@ namespace SocketServerSystem
             //SampleClientUDP.script.SendData(sd);
             //Console.ReadLine();
 
-            ////server
-            //new SampleServerUDP(4868);
-            //SampleServerUDP.script.ServerStart();
+            //server
+            new SampleServerUDP(4868);
+            SampleServerUDP.script.ServerStart();
             #endregion
 
         }
@@ -77,13 +77,16 @@ namespace SocketServerSystem
         {
             UDPUser user;
             string[] cut = di.data.Split('\n');
-            Console.WriteLine(cut[0]);
             switch (cut[0])
             {
                 case "NewUser":
                     AddUser(new UDPUser(di.remote, cut[1]));
                     Console.WriteLine("새로운 유저가 접속 했습니다 : {0}",cut[1]);
-                    SendData(cut[1], Encoding.Default.GetBytes("새로운 서버에 오신것을 환영 합니다."));
+                    SendData(cut[1], Encoding.UTF8.GetBytes("새로운 서버에 오신것을 환영 합니다."));
+                    break;
+                case "RemoveUser":
+                    RemoveUser(cut[1]);
+                    Console.WriteLine("유저가 접속을 종료 하였습니다 : {0}", cut[1]);
                     break;
                 case "JoinLobby":
                     user = UserInfo(di.remote);
@@ -154,6 +157,19 @@ namespace SocketServerSystem
                         user.is_RoomPrivate = false;
                     }
                     break;
+                case "SendMessage":
+                    user = UserInfo(di.remote);
+                    if (user == null)
+                    {
+                        Console.WriteLine("유저를 찾을수 없습니다");
+                        break;
+                    }
+                    if (user.pos.Equals(UDPUser.ePos.Lobby))
+                    {
+                        int lobbyCount = LobbyList.FindIndex(n => n.lobbyName.Equals(user.lobbyName));
+                        LobbyList[lobbyCount].Send(di.data);
+                    }
+                    break;
             }
         }
 
@@ -183,7 +199,7 @@ namespace SocketServerSystem
             }
             public void Send(string _data)
             {
-                byte[] data = Encoding.Default.GetBytes(_data);
+                byte[] data = Encoding.UTF8.GetBytes(_data);
                 for (int n = 0; n < room_User_Cid.Count; n++)
                 {
                     if (!UDP.script.SendData(room_User_Cid[n], data))
@@ -215,7 +231,7 @@ namespace SocketServerSystem
             }
             public void Send(string _data)
             {
-                byte[] data = Encoding.Default.GetBytes(_data);
+                byte[] data = Encoding.UTF8.GetBytes(_data);
                 for (int n = 0; n < room_User_Cid.Count; n++)
                 {
                     if (!UDP.script.SendData(room_User_Cid[n], data))
