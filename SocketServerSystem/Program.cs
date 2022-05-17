@@ -20,9 +20,9 @@ namespace SocketServerSystem
             //SampleClientUDP.script.SendData(sd);
             //Console.ReadLine();
 
-            //server
-            new SampleServerUDP(4868);
-            SampleServerUDP.script.ServerStart();
+            ////server
+            //new SampleServerUDP(4868);
+            //SampleServerUDP.script.ServerStart();
             #endregion
 
         }
