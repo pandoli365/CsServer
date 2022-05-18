@@ -224,7 +224,7 @@ namespace SocketServerSystem
         /// </summary>
         void Send()
         {
-            byte[] data = new byte[1024];
+            byte[] data = new byte[maxSize];
             while (is_SocketPlay)
             {
                 if (OutData.Count.Equals(0))
@@ -235,6 +235,7 @@ namespace SocketServerSystem
                 {
                     try
                     {
+                        data = new byte[maxSize];
                         DataInfo di = OutData.Dequeue();
                         data = Encoding.UTF8.GetBytes(di.data);
                         if (data.Length > maxSize)
@@ -313,6 +314,16 @@ namespace SocketServerSystem
         public void SendData(DataInfo di)
         {
             OutData.Enqueue(di);
+        }
+
+        /// <summary>
+        /// 유저가 퇴장 명령을 보낼때 사용
+        /// </summary>
+        public void Exit()
+        {
+            byte[] data = new byte[1024];
+            data = Encoding.UTF8.GetBytes("OutRoom");
+            client.SendTo(data, data.Length, SocketFlags.None, remote);
         }
 
         public void AddUser(UDPUser NewUser)
