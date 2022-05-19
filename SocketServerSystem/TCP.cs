@@ -11,6 +11,23 @@ namespace SocketServerSystem
 {
     class TCP
     {
+        class TCPUser
+        {
+            string cid;
+            uint sid;
+            public Queue<Packet.Message> getMassageList;
+            public Queue<Packet.Message> outMassageList;
+            public Socket user; //소켓
+            public string ip;//유저의 ip주소
+            public TCPUser(Socket _user, uint _sid = 0, string _cid = "")
+            {
+                cid = _cid;
+                sid = _sid;
+                user = _user;
+                getMassageList = new Queue<Packet.Message>();
+                outMassageList = new Queue<Packet.Message>();
+            }
+        }
         #region System
         public static TCP script;
         Socket Server;
@@ -48,7 +65,7 @@ namespace SocketServerSystem
         private void DataSet()
         {
             //userList = new List<TCPUser>();
-            //Server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //Server.Bind(new IPEndPoint(IPAddress.Any, Port));
             //Server.Listen(10);
             //tr_Accept = new Thread(() => Accept());
@@ -83,30 +100,13 @@ namespace SocketServerSystem
 
         #endregion
     }
-    class TCPUser
-    {
-        string cid;
-        uint sid;
-        public Queue<Packet.Message> getMassageList;
-        public Queue<Packet.Message> outMassageList;
-        public Socket user; //소켓
-        public string ip;//유저의 ip주소
-        public TCPUser(Socket _user, uint _sid = 0, string _cid = "")
-        {
-            cid = _cid;
-            sid = _sid;
-            user = _user;
-            getMassageList = new Queue<Packet.Message>();
-            outMassageList = new Queue<Packet.Message>();
-        }
-    }
 }
-//간단히 파일전송, 보이스 체팅 가능하게 만들기
+//간단히 파일전송 만들기
 //파일전송 설계
 //1. 소켓 연결요청
 //2. 파일을 받을지 전송할지 메세지를 보냄
 //3. 파일 공유가 끝나면 end메세지전송
 //4. 소켓을 끊음.(서버에서 받는경우 끊는 메세지를 보낼것 클라에서 받는경우 전송완료 메세지를 받으면 바로 소켓종료)
-//보이스 체팅 설계
-//---기본 보이스 연결 방식부터 공부하고 오기---
 //메세지 기능도 넣을 예정이지만 다수에게 보내기 어렵게 만들 예정
+//tcp 주요용도 : Web열람、메일의 송수신、파일전송、공유
+//udp 주요용도 : 음성통화、Video스트리밍、멀티캐스터 통신, Broadcast 통신、소량의 데이터전송
