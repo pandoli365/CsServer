@@ -247,7 +247,7 @@ namespace SocketServerSystem
                         else
                         {
                             Console.WriteLine("전송완료");
-                            client.SendTo(data, data.Length, SocketFlags.None, remote);
+                            client.SendTo(data, data.Length, SocketFlags.None, di.remote);
                         }
                     }
                     catch (SocketException ex)
