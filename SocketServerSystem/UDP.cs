@@ -319,10 +319,10 @@ namespace SocketServerSystem
         /// <summary>
         /// 유저가 퇴장 명령을 보낼때 사용
         /// </summary>
-        public void Exit()
+        public void Exit(string NickName)
         {
-            byte[] data = new byte[1024];
-            data = Encoding.UTF8.GetBytes("OutRoom");
+            byte[] data = new byte[maxSize];
+            data = Encoding.UTF8.GetBytes("RemoveUser\n" + NickName);
             client.SendTo(data, data.Length, SocketFlags.None, remote);
         }
 
@@ -332,9 +332,16 @@ namespace SocketServerSystem
         }
         public void RemoveUser(string _cid)
         {
-            int index = userList.FindIndex(n => n.cid.Equals(_cid));
-            if (!index.Equals(-1))
-                userList.RemoveAt(index);
+            if(userList.Count.Equals(1))
+            {
+                userList.Clear();
+            }
+            else
+            { 
+                int index = userList.FindIndex(n => n.cid.Equals(_cid));
+                if (!index.Equals(-1))
+                    userList.RemoveAt(index);
+            }
         }
 
         public UDPUser UserInfo(EndPoint _sid)
