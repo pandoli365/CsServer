@@ -63,7 +63,7 @@ namespace SocketServerSystem
             {
                 //에러 글자색 변경을 위한 코드
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("에러 : 중복된 선언을 하셨습니다");
+                DebugLog("에러 : 중복된 선언을 하셨습니다");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -81,18 +81,18 @@ namespace SocketServerSystem
             {
                 case "NewUser":
                     AddUser(new UDPUser(di.remote, cut[1]));
-                    Console.WriteLine("새로운 유저가 접속 했습니다 : {0}",cut[1]);
+                    DebugLog("새로운 유저가 접속 했습니다 : {0}",cut[1]);
                     SendData(cut[1], Encoding.UTF8.GetBytes("새로운 서버에 오신것을 환영 합니다."));
                     break;
                 case "RemoveUser":
                     RemoveUser(cut[1]);
-                    Console.WriteLine("유저가 접속을 종료 하였습니다 : {0}", cut[1]);
+                    DebugLog("유저가 접속을 종료 하였습니다 : {0}", cut[1]);
                     break;
                 case "JoinLobby":
                     user = UserInfo(di.remote);
                     if (user == null)
                     {
-                        Console.WriteLine("유저를 찾을수 없습니다");
+                        DebugLog("유저를 찾을수 없습니다");
                         break;
                     }
                     if (user.pos.Equals(UDPUser.ePos.Server) || user.pos.Equals(UDPUser.ePos.Room))
@@ -112,7 +112,7 @@ namespace SocketServerSystem
                     user = UserInfo(di.remote);
                     if (user == null)
                     {
-                        Console.WriteLine("유저를 찾을수 없습니다");
+                        DebugLog("유저를 찾을수 없습니다");
                         break;
                     }
                     if (user.pos.Equals(UDPUser.ePos.Lobby))
@@ -127,7 +127,7 @@ namespace SocketServerSystem
                     user = UserInfo(di.remote);
                     if (user == null)
                     {
-                        Console.WriteLine("유저를 찾을수 없습니다");
+                        DebugLog("유저를 찾을수 없습니다");
                         break;
                     }
                     if (user.pos.Equals(UDPUser.ePos.Lobby))
@@ -161,7 +161,7 @@ namespace SocketServerSystem
                     user = UserInfo(di.remote);
                     if (user == null)
                     {
-                        Console.WriteLine("유저를 찾을수 없습니다");
+                        DebugLog("유저를 찾을수 없습니다");
                         break;
                     }
                     if (user.pos.Equals(UDPUser.ePos.Lobby))
@@ -242,6 +242,11 @@ namespace SocketServerSystem
                 }
             }
         }
+
+        public override void DebugLog(string Data)
+        {
+            Console.WriteLine(Data);
+        }
     }
     class SampleClientUDP : UDP
     {
@@ -256,9 +261,13 @@ namespace SocketServerSystem
             {
                 //에러 글자색 변경을 위한 코드
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("에러 : 중복된 선언을 하셨습니다");
+                DebugLog("에러 : 중복된 선언을 하셨습니다");
                 Console.ForegroundColor = ConsoleColor.White;
             }
+        }
+        public override void DebugLog(string Data)
+        {
+            Console.WriteLine(Data);
         }
     }
 }

@@ -39,13 +39,20 @@ namespace SocketServerSystem
             public string lobbyName;
             public string roomName;
             public bool is_RoomPrivate;
+            public DateTime loginTime;//최종 접속 시간
 
             public UDPUser(EndPoint _sid, string _cid = "")
             {
                 sid = _sid;
                 cid = _cid;
                 pos = ePos.Server;
-                Console.WriteLine("새유저가 들어왔습니다");
+                loginTime = DateTime.Now;
+                DebugLog("새유저가 들어왔습니다");
+            }
+
+            public void TimeReset()
+            {
+                loginTime = DateTime.Now;
             }
         }
 
@@ -83,7 +90,7 @@ namespace SocketServerSystem
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("에러 : 중복된 선언을 하셨습니다");
+                DebugLog("에러 : 중복된 선언을 하셨습니다");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -241,18 +248,18 @@ namespace SocketServerSystem
                         if (data.Length > maxSize)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("시스템에 설정된 패킷보다 더 높은용량을 송신합니다.");
+                            DebugLog("시스템에 설정된 패킷보다 더 높은용량을 송신합니다.");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else
                         {
-                            Console.WriteLine("전송완료");
-                            client.SendTo(data, data.Length, SocketFlags.None, di.remote);
+                            DebugLog("전송완료");
+                            client.SendTo(data, data.Length, SocketFlags.None, remote);
                         }
                     }
                     catch (SocketException ex)
                     {
-                        Console.WriteLine("{0} : {1}", ex.SocketErrorCode, ex.Message);
+                        DebugLog("{0} : {1}", ex.SocketErrorCode, ex.Message);
                     }
                 }
             }
@@ -264,7 +271,7 @@ namespace SocketServerSystem
         /// <param name="di"></param>
         public virtual void v_Processing(DataInfo di)
         {
-            Console.WriteLine(di.data);
+            DebugLog(di.data);
         }
 
         /// <summary>
@@ -287,7 +294,7 @@ namespace SocketServerSystem
                     if (_data.Length > maxSize)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("시스템에 설정된 패킷보다 더 높은용량을 송신합니다.");
+                        DebugLog("시스템에 설정된 패킷보다 더 높은용량을 송신합니다.");
                         Console.ForegroundColor = ConsoleColor.White;
                         return false;
                     }
@@ -300,7 +307,7 @@ namespace SocketServerSystem
                 catch (SocketException ex)
                 {
 
-                    Console.WriteLine("{0} : {1}", ex.SocketErrorCode, ex.Message);
+                    DebugLog("{0} : {1}", ex.SocketErrorCode, ex.Message);
                     return false;
                 }
 
@@ -353,6 +360,7 @@ namespace SocketServerSystem
             }
             else
             {
+                userList[index].TimeReset;
                 return userList[index];
             }
         }
@@ -366,11 +374,15 @@ namespace SocketServerSystem
             }
             else
             {
+                userList[index].TimeReset;
                 return userList[index];
             }
         }
 
-   
+        public virtual void DebugLog(string Data)
+        {
+            Console.WriteLine(Data);
+        }
     }
 }
 //메모
@@ -391,3 +403,6 @@ namespace SocketServerSystem
 //다시 만들기 단순한 udp와 서버 시스템이랑 분리할것
 //String형식에서 obj[] 형식으로 전송할 수 있게 변경할것
 //유저가 일정 시간동안 반응이 없다면 자동으로 연결을 끊게 만들기
+//모바일에서는 정상적으로 종료가 되지않는 이슈가 있음.
+//강제종료나 오류로인한 종료를 처리해줄 수 있게 만들기
+//https://stackoverflow.com/questions/19568315/how-to-handle-running-service-when-app-is-killed-by-swiping-in-android 모바일 강제종료 대비 참조
