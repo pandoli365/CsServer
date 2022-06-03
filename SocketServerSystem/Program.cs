@@ -14,15 +14,15 @@ namespace SocketServerSystem
             #region UDPSample
             ////client
             //new SampleClientUDP(4868, "175.124.197.128");
-            //SampleClientUDP.script.ClientStart();
+            //SampleClientUDP.Instance.ClientStart();
             //string SendData = "NewUser\npandoli";
             //SampleClientUDP.DataInfo sd = new SampleClientUDP.DataInfo(SendData, null);
-            //SampleClientUDP.script.SendData(sd);
+            //SampleClientUDP.Instance.SendData(sd);
             //Console.ReadLine();
 
             ////server
             //new SampleServerUDP(4868);
-            //SampleServerUDP.script.ServerStart();
+            //SampleServerUDP.Instance.ServerStart();
             #endregion
 
         }
@@ -35,9 +35,9 @@ namespace SocketServerSystem
     {
         //로비 List
         List<Lobby> LobbyList;
+        #region Singleton
         //참조를 선언한 경우라면 가급적 udp의 직접 접근은 삼가해 주세요
-        public static SampleServerUDP script;
-
+        public static SampleServerUDP Instance;
         /// <summary>
         /// base는 참조 선언한 클레스에 초기화 파라미터들을 전송해줄때 사용합니다.
         /// _is_Server(true) : 현재 동작하는 시스템이 서버인지 클라이언트인지 구분하는 파라미터 (true : 서버 falst : 클라이언트)
@@ -55,9 +55,9 @@ namespace SocketServerSystem
         /// <param name="_Port"></param>
         public SampleServerUDP(int _Port = 4861) : base(true, 1024, _Port)
         {
-            if (script == null)
+            if (Instance == null)
             {
-                script = this;
+                Instance = this;
             }
             else
             {
@@ -67,6 +67,7 @@ namespace SocketServerSystem
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+        #endregion
 
         /// <summary>
         /// 데이터를 받았을 경우위 처리
@@ -202,7 +203,7 @@ namespace SocketServerSystem
                 byte[] data = Encoding.UTF8.GetBytes(_data);
                 for (int n = 0; n < room_User_Cid.Count; n++)
                 {
-                    if (!UDP.script.SendData(room_User_Cid[n], data))
+                    if (!UDP.Instance.SendData(room_User_Cid[n], data))
                     {
                         room_User_Cid.RemoveAt(n);
                         n--;
@@ -234,7 +235,7 @@ namespace SocketServerSystem
                 byte[] data = Encoding.UTF8.GetBytes(_data);
                 for (int n = 0; n < room_User_Cid.Count; n++)
                 {
-                    if (!UDP.script.SendData(room_User_Cid[n], data))
+                    if (!UDP.Instance.SendData(room_User_Cid[n], data))
                     {
                         room_User_Cid.RemoveAt(n);
                         n--;
@@ -250,12 +251,13 @@ namespace SocketServerSystem
     }
     class SampleClientUDP : UDP
     {
-        public static SampleClientUDP script;
+        #region Singleton
+        public static SampleClientUDP Instance;
         public SampleClientUDP(int _port, string _ip = "127.0.0.1") : base(false, 1024, _port, _ip)
         {
-            if (script == null)
+            if (Instance == null)
             {
-                script = this;
+                Instance = this;
             }
             else
             {
@@ -265,6 +267,7 @@ namespace SocketServerSystem
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+        #endregion
         public override void DebugLog(string Data)
         {
             Console.WriteLine(Data);

@@ -29,19 +29,21 @@ namespace SocketServerSystem
             }
         }
         #region System
-        public static TCP script;
         Socket Server;
         int Port;
+        #region Singleton
+        public static TCP Instance;
         public TCP(int _Port = 4860)
         {
-            if (script == null)
+            if (Instance == null)
             {
-                script = this;
+                Instance = this;
                 is_ServerPlay = false;
                 Port = _Port;
                 DataSet();
             }
         }
+        #endregion
         /// <summary>
         /// 모든 데이터를 초기화 할때 호출
         /// </summary>
@@ -108,5 +110,11 @@ namespace SocketServerSystem
 //3. 파일 공유가 끝나면 end메세지전송
 //4. 소켓을 끊음.(서버에서 받는경우 끊는 메세지를 보낼것 클라에서 받는경우 전송완료 메세지를 받으면 바로 소켓종료)
 //메세지 기능도 넣을 예정이지만 다수에게 보내기 어렵게 만들 예정
-//tcp 주요용도 : Web열람、메일의 송수신、파일전송、공유
-//udp 주요용도 : 음성통화、Video스트리밍、멀티캐스터 통신, Broadcast 통신、소량의 데이터전송
+//tcp 주요용도 : Web열람, 메일의 송수신, 파일전송, 공유
+//udp 주요용도 : 음성통화,Video스트리밍,멀티캐스터 통신, Broadcast 통신(방송),소량의 데이터전송
+
+
+
+//현재 구현된 기능
+//udp : 멀티캐스터 통신
+//tcp : 

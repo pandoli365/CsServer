@@ -57,7 +57,7 @@ namespace SocketServerSystem
         }
 
         #region System
-        public static UDP script;
+
         Socket server;
         Socket client;
         IPEndPoint sender;
@@ -68,6 +68,9 @@ namespace SocketServerSystem
         bool is_Server;
         string ip;
         int maxSize;
+
+        #region Singleton
+        public static UDP Instance;
         /// <summary>
         /// udp 기본 세팅
         /// </summary>
@@ -77,9 +80,9 @@ namespace SocketServerSystem
         /// <param name="_ip">클라이언트가 접속을 희망하는 ip주소</param>
         public UDP(bool _is_Server,int _maxSize = 1024, int _port = 4861, string _ip = "127.0.0.1")
         {
-            if (script == null)
+            if (Instance == null)
             {
-                script = this;
+                Instance = this;
                 is_SocketPlay = false;
                 maxSize = _maxSize;
                 port = _port;
@@ -94,6 +97,8 @@ namespace SocketServerSystem
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+        #endregion
+
         /// <summary>
         /// 모든 데이터를 초기화 할때 호출
         /// </summary>
