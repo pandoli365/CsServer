@@ -1,14 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Bo45TvrbObT6jnykYWrck7w5dYoRkOySi6afcuoQ1NALgPC8FUlqKJmx8YN/44i2AyYnY6odlafpvtB5+yoDvQ==",
+  "dgSpecHash": "nAqHvp85kG/dxMFPmtYjzpHV3dnXt8YWmo54TZ7v2WzSMy2vH9bbR3gEdxF97NrXNm7/1LkqUkiVnR1ZowcrjA==",
   "success": true,
-  "projectFilePath": "/Users/pandoli365/Downloads/git/CsServer/Server/Server.csproj",
+  "projectFilePath": "E:\\git\\CsServer\\Server\\Server.csproj",
   "expectedPackageFiles": [
-    "/Users/pandoli365/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
-    "/Users/pandoli365/.nuget/packages/nlog/5.2.0/nlog.5.2.0.nupkg.sha512",
-    "/Users/pandoli365/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.18/microsoft.aspnetcore.app.ref.6.0.18.nupkg.sha512",
-    "/Users/pandoli365/.nuget/packages/microsoft.netcore.app.host.osx-arm64/6.0.18/microsoft.netcore.app.host.osx-arm64.6.0.18.nupkg.sha512",
-    "/Users/pandoli365/.nuget/packages/microsoft.netcore.app.ref/6.0.18/microsoft.netcore.app.ref.6.0.18.nupkg.sha512"
+    "C:\\Users\\acst0\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\acst0\\.nuget\\packages\\nlog\\5.2.0\\nlog.5.2.0.nupkg.sha512"
   ],
   "logs": []
 }
