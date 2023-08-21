@@ -1,6 +1,7 @@
 ﻿public enum Protocol
 {
     Test = 0,
+    AddUser = 1,
 }
 
 public enum Error
